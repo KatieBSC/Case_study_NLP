@@ -4,6 +4,8 @@
 *.pt
 .idea
 trained_models
+train_error
+data
 .ipynb_checkpoints
 notebooks/.ipynb_checkpoints
 .DS_Store

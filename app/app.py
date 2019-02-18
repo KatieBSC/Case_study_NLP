@@ -25,7 +25,7 @@ def predict():
         # Pre-processing Text
         # Load TfidfTransformer()
         X_test_matrix = text_processing.clean_raw_text(text_as_series=data,
-                                                       tf_file='../../../Desktop/Case_Study_GA/tfidf_vec_product.pkl',
+                                                       tf_file='../../../../Desktop/Case_Study_GA/tfidf_vec_product.pkl',
                                                        stopwords=stopwords.words('english'))
         # Prepare input data
         dtype = torch.float
@@ -36,7 +36,7 @@ def predict():
         my_prediction = y_pred.numpy()
 
         # Load label encoder
-        k = open('../../../Desktop/Case_Study_GA/label_encoder_product.pickle', 'rb')
+        k = open('../../../../Desktop/Case_Study_GA/label_encoder_product.pickle', 'rb')
         le = pickle.load(k)
         pred_label = le.inverse_transform(my_prediction)
         print(my_prediction, pred_label)
