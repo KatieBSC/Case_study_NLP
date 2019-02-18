@@ -1,6 +1,7 @@
 *.csv
 *.pkl
 *.pickle
+*.pt
 .idea
 trained_models
 .ipynb_checkpoints
