@@ -4,13 +4,7 @@ import torch
 import torch.nn as nn
 import pickle
 from scipy import sparse
-
-
-def misclassified(true, pred):
-    misclassifiction = round(1.0 * (true != pred).sum().item()/pred.size()[0] * 100, 3)
-    string = 'Misclassification Rate: ' + str(misclassifiction) + '%'
-    return string
-
+from utils import error_metrics
 
 dataset_file = '../../Desktop/Case_Study_GA/dataset_product.pickle'
 
@@ -43,15 +37,13 @@ val_targets = y_val  # Column/Series
 print(inputs.shape, targets.shape)
 print(val_inputs.shape, val_targets.shape)
 
-#x = torch.tensor(inputs.todense(), dtype=torch.float32)
-#y = torch.tensor(targets, dtype=torch.long)
-
 x_test = torch.tensor(val_inputs.todense(), dtype=torch.float32)
 y_test = torch.tensor(val_targets, dtype=torch.long)
 
+print(x_test.shape, y_test.shape)
+
 k = open('../../Desktop/Case_Study_GA/label_encoder_product.pickle', 'rb')
 le = pickle.load(k)
-
 
 # Parameters
 N, D_in, D_out = inputs.shape[0], inputs.shape[1], len(le.classes_)
@@ -81,7 +73,7 @@ criterion = nn.CrossEntropyLoss()
 loss_hist, val_loss_hist = [], []
 
 # Train
-num_epochs = 10
+num_epochs = 11
 epochs = range(num_epochs)
 for t in epochs:
     for param in model.parameters():
@@ -137,17 +129,17 @@ for t in epochs:
         print('-' * 10)
         print('Train loss: ' + str(loss.item()))
         print('Validate loss: ' + str(val_loss.item()))
-        print(misclassified(val_true, val_pred))
+        print(error_metrics.misclassified(val_true, val_pred))
 
-    state_file = 'trained_models_new/train1of1_h128_product_STATE' + str(t) + '.tar'
-    model_file = 'trained_models_new/train1of1_h128_product_MODEL' + str(t) + '.pt'
+    state_file = 'trained_models/train_h128_product_STATE' + str(t) + '.tar'
+    model_file = 'trained_models/train_h128_product_MODEL' + str(t) + '.pt'
 
-    torch.save(state, state_file)
+    #torch.save(state, state_file)
     torch.save(model, model_file)
 
 # Save statistics
 loss_hist_df = pd.DataFrame(loss_hist)
 loss_hist_df.columns = ['Train']
 loss_hist_df['Validate'] = val_loss_hist
-loss_hist_df.to_csv('train_errors_new/loss_hist_train1of1_h128_product_longer.csv')
-torch.save(model, 'trained_models_new/train1of1_h128_product_MODEL_longer.pt')
+loss_hist_df.to_csv('train_errors/loss_hist_train_h128_product.csv')
+torch.save(model, 'trained_models/train_h128_product_MODEL_END.pt')

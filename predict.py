@@ -1,6 +1,6 @@
 import pickle
 from nltk.corpus import stopwords
-from features import text_processing
+from utils import text_processing
 import torch
 from sklearn.metrics import accuracy_score
 import pandas as pd
@@ -9,9 +9,9 @@ import pandas as pd
 dataset_file = '../../Desktop/Case_Study_GA/dataset_product.pickle'
 stop = stopwords.words('english')
 tf_file = '../../Desktop/Case_Study_GA/tfidf_vec_product.pkl'
-model_file_name = 'trained_models_new/train1of1_h128_product_MODEL3.pt'
+model_file_name = 'trained_models/train_h128_product_MODEL3.pt'
 label_encoder_file_name = '../../Desktop/Case_Study_GA/label_encoder_product.pickle'
-save_results_csv_file_name = 'data/model_test_predictions.csv'
+save_results_csv_file_name = 'data/model_3_test_predictions.csv'
 
 # Get Data
 with open(dataset_file, 'rb') as handle:
@@ -68,3 +68,4 @@ if __name__ == "__main__":
         print('End')
     else:
         print(predictions)
+
