@@ -5,6 +5,7 @@
 .idea
 trained_models
 .ipynb_checkpoints
+notebooks/.ipynb_checkpoints
 .DS_Store
 __pycache__
 
