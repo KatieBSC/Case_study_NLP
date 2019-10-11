@@ -3,15 +3,14 @@ from nltk.corpus import stopwords
 from utils import text_processing
 import torch
 from sklearn.metrics import accuracy_score
-import pandas as pd
 
 # Parameters
-dataset_file = '../../../Desktop/Case_Study_GA/dataset_product.pickle'
+dataset_file = '../../../dataset_product.pickle'
 stop = stopwords.words('english')
-tf_file = '../../../Desktop/Case_Study_GA/tfidf_vec_product.pkl'
+tf_file = '../../../tfidf_vec_product.pkl'
 model_file_name = 'trained_models/train_h128_product_MODEL3.pt'
-label_encoder_file_name = '../../../Desktop/Case_Study_GA/label_encoder_product.pickle'
-#save_results_csv_file_name = 'data/model_3_test_predictions.csv'
+label_encoder_file_name = '../../../label_encoder_product.pickle'
+save_results_csv_file_name = 'data/model_3_test_predictions.csv'
 
 # Get Data
 with open(dataset_file, 'rb') as handle:
@@ -57,14 +56,16 @@ def predict(text, model_file_name, label_encoder_file_name):
     return predicted_label
 
 if __name__ == "__main__":
-    predictions = predict(text=X_test_text, model_file_name=model_file_name, label_encoder_file_name=label_encoder_file_name)
+    predictions = predict(text=X_test_text,
+                          model_file_name=model_file_name,
+                          label_encoder_file_name=label_encoder_file_name)
 
     if y_test_bool == True:
         # Quick evaluation metrics
         print('Accuracy: ' + str(round(accuracy_score(true_labels, predictions), 4)))
         # Save results
-        #results_df = pd.DataFrame({'True': true_labels, 'Pred': predictions})
-        #results_df.to_csv(save_results_csv_file_name, index=False)
+        results_df = pd.DataFrame({'True': true_labels, 'Pred': predictions})
+        results_df.to_csv(save_results_csv_file_name, index=False)
         print('End')
     else:
         print(predictions)
