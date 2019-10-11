@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import torch
 import torch.nn as nn
@@ -6,18 +5,17 @@ import pickle
 from scipy import sparse
 from utils import error_metrics
 
-dataset_file = '../../Desktop/Case_Study_GA/dataset_product.pickle'
+dataset_file = '../../dataset_product.pickle'
 
-train_matrix_file = '../../Desktop/Case_Study_GA/X_train_product.npz'
+train_matrix_file = '../../X_train_product.npz'
 
-val_matrix_file = '../../Desktop/Case_Study_GA/X_val_product.npz'
+val_matrix_file = '../../X_val_product.npz'
 
 with open(dataset_file, 'rb') as handle:
     dataset = pickle.load(handle)
 
 X_train_matrix = sparse.load_npz(train_matrix_file)
 y_train = dataset['y_train']
-y_train = np.delete(y_train, 72576)  # Element that was removed in cleaning
 
 
 X_val_matrix = sparse.load_npz(val_matrix_file)
@@ -42,7 +40,7 @@ y_test = torch.tensor(val_targets, dtype=torch.long)
 
 print(x_test.shape, y_test.shape)
 
-k = open('../../Desktop/Case_Study_GA/label_encoder_product.pickle', 'rb')
+k = open('../../label_encoder_product.pickle', 'rb')
 le = pickle.load(k)
 
 # Parameters
@@ -123,7 +121,7 @@ for t in epochs:
     val_pred = torch.max(outputs_val.data, 1)[1]
     val_true = y_test
 
-    # Print every .... epochs
+    # Print every epoch
     if t % 1 == 0:
         print('Epoch {}/{}'.format(t, num_epochs - 1))
         print('-' * 10)
@@ -131,15 +129,15 @@ for t in epochs:
         print('Validate loss: ' + str(val_loss.item()))
         print(error_metrics.misclassified(val_true, val_pred))
 
-    state_file = 'trained_models/train_h128_product_STATE' + str(t) + '.tar'
-    model_file = 'trained_models/train_h128_product_MODEL' + str(t) + '.pt'
+    state_file = 'trained_models/train_h{}_product_STATE{}.tar'.format(H, t)
+    model_file = 'trained_models/train_h{}_product_MODEL{}.pt'.format(H, t)
 
-    #torch.save(state, state_file)
+    torch.save(state, state_file)
     torch.save(model, model_file)
 
 # Save statistics
 loss_hist_df = pd.DataFrame(loss_hist)
 loss_hist_df.columns = ['Train']
 loss_hist_df['Validate'] = val_loss_hist
-loss_hist_df.to_csv('train_errors/loss_hist_train_h128_product.csv')
-torch.save(model, 'trained_models/train_h128_product_MODEL_END.pt')
+loss_hist_df.to_csv('train_errors/loss_hist_train_h{}_product.csv'.format(H))
+torch.save(model, 'trained_models/train_h{}_product_MODEL_END.pt'.format(H))
